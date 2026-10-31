@@ -5,6 +5,29 @@ namespace jxxc {
 SourceText::SourceText(const std::string& fileName)
     : fileName{ fileName }
     , source{ fileName, std::ios::binary } {
+
+    if (isOpen()) {
+        lineStartCounter = source.tellg();
+    }
+}
+
+int SourceText::peek() {
+    return source.peek();
+}
+
+int SourceText::advance() {
+
+    int current = peek();
+    source.get();
+
+    if (current == '\n') {
+        lineCounter++;
+        columnCounter = 0;
+        lineStartCounter = source.tellg();
+    }
+    columnCounter++;
+
+    return peek();
 }
 
 bool SourceText::isOpen() {
@@ -35,7 +58,7 @@ Position SourceText::position() {
     return { lineCounter, columnCounter, lineStartCounter };
 }
 
-std::string SourceText::getLineFor(const Position &lexemePosition) {
+std::string SourceText::getLineFor(const Position& lexemePosition) {
     std::ios::iostate state = source.rdstate();
     source.clear();
 

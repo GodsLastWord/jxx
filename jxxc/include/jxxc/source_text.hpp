@@ -18,6 +18,9 @@ class SourceText {
 public:
     explicit SourceText(const std::string&);
 
+    int peek();
+    int advance();
+
     bool isOpen();
     bool eof();
 
