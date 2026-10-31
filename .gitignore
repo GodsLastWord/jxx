@@ -1,4 +1,5 @@
 .clangd
+*.jxx
 
 # Prerequisites
 *.d
