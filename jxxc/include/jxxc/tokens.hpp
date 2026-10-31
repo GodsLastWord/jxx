@@ -27,6 +27,8 @@ struct Token {
         UNRECOGNIZED,
         INVALID_INT_LITERAL,
 
+        _EOF,
+
         INT_LITERAL,
 
         PLUS,
