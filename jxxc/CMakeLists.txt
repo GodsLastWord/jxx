@@ -1,5 +1,5 @@
 file(GLOB_RECURSE JXXC_SOURCE_FILES "src/*.cpp")
 
-add_executable(jxxc ${JXXC_SOURCE_FILES })
+add_executable(jxxc ${JXXC_SOURCE_FILES})
 
 target_include_directories(jxxc PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
