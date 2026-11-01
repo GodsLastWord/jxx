@@ -2,8 +2,8 @@
 
 namespace jxxc {
 
-ErrorFormatter::ErrorFormatter(std::ostream& out)
-    : out{ out } {
+ErrorFormatter::ErrorFormatter(SourceText& source)
+    : source{ source } {
 }
 
 const std::string ErrorFormatter::RED{ "\033[1;31m" };
