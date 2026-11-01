@@ -28,7 +28,7 @@ public:
         // clang-format off
         std::println(
             std::cerr,
-            "{}error:{} {}",
+            "{}error:{} {}\n",
             RED,
             CLEAR,
             std::format(
@@ -66,7 +66,7 @@ public:
 
         std::println(
             std::cerr,
-            " {:>{}} | {:>{}}",
+            " {:>{}} | {:>{}}\n",
             "",
             lineNumberLength,
             "^",
@@ -83,7 +83,7 @@ public:
         // clang-format off
         std::println(
             std::cerr,
-            "{}fatal error:{} {}",
+            "{}fatal error:{} {}\n",
             RED,
             CLEAR,
             std::format(
