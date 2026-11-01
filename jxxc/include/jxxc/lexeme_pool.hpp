@@ -9,7 +9,7 @@ namespace jxxc {
 class LexemePool {
     std::vector<std::string> lexemes;
 
-private:
+public:
     explicit LexemePool();
 
     std::size_t add(const std::string&);
