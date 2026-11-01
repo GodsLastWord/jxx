@@ -1,25 +1,28 @@
 #include <filesystem>
-#include <print>
 #include <iostream>
+#include <print>
 
+#include "jxxc/error_formatter.hpp"
 #include "jxxc/source_text.hpp"
 
 int main(int argc, char* argv[]) {
 
+    jxxc::ErrorFormatter errfmt;
+
     if (argc < 2) {
-        std::println(std::cerr, "jxxc: fatal error: no input files");
+        errfmt.fatal("no input files");
         return 1;
     }
 
     const std::string fileName{ argv[1] };
     if (!std::filesystem::exists(fileName)) {
-        std::println(std::cerr, "jxxc: fatal error: `{}` does not exist", fileName);
+        errfmt.fatal("`{}` does not exist", fileName);
         return 1;
     }
 
     jxxc::SourceText text{ fileName };
     if (!text.isOpen()) {
-        std::println(std::cerr, "jxxc: fatal error: `{}` could not be opened", fileName);
+        errfmt.fatal("`{}` could not be opened", fileName);
         return 1;
     }
 
