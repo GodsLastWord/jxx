@@ -62,9 +62,13 @@ std::string SourceText::getLineFor(const Position& lexemePosition) {
     std::ios::iostate state = source.rdstate();
     source.clear();
 
+    std::streampos currentPosition = source.tellg();
+    source.seekg(lexemePosition.lineStart);
+
     std::string line;
     std::getline(source, line);
 
+    source.seekg(currentPosition);
     source.setstate(state);
     return line;
 }
