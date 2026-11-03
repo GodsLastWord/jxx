@@ -31,7 +31,7 @@ auto Parser::parse() -> std::unique_ptr<ast::Expression> {
 
 auto Parser::parseExpression(int precedence) -> ast::Expression* {
 
-    if (!PARSE_RULES.contains(currentToken.kind)) {
+    if (!PARSE_RULES.contains(currentToken.kind) || PARSE_RULES[currentToken.kind].prefix == nullptr) {
         errfmt.expected(currentToken, "a primary expression");
         advance();
         return new ast::InvalidExpression{ previousToken };
