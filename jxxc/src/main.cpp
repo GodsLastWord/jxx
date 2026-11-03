@@ -1,12 +1,10 @@
 #include <filesystem>
-#include <iostream>
-#include <print>
-#include <vector>
 
 #include "jxxc/error_formatter.hpp"
 #include "jxxc/lexeme_pool.hpp"
-#include "jxxc/scanner.hpp"
+#include "jxxc/parser.hpp"
 #include "jxxc/source_text.hpp"
+#include "jxxc/visitor/ast_printer.hpp"
 
 int main(int argc, char* argv[]) {
 
@@ -29,16 +27,11 @@ int main(int argc, char* argv[]) {
 
     jxxc::ErrorFormatter errfmt{ text };
     jxxc::LexemePool lexemes;
-    jxxc::Scanner scan{ text, lexemes, errfmt };
+    jxxc::visitor::ASTPrinter printer{ lexemes };
 
-    std::vector<jxxc::Token> correctTokens;
-    for (jxxc::Token t = scan.next(); t.kind != jxxc::Token::Kind::_EOF; t = scan.next()) {
-        correctTokens.push_back(t);
-    }
+    auto tree = jxxc::Parser::parse(text, lexemes, errfmt);
 
-    for (auto& t : correctTokens) {
-        std::println("{:>5}[{:>2}, {:>2}] -> `{}`", int(t.kind), t.position.line, t.position.column, lexemes.get(t.lexeme));
-    }
+    printer.visit(*tree);
 
     return 0;
 }
