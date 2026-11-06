@@ -1,10 +1,10 @@
 #pragma once
 
-#include <complex>
 #include <format>
 #include <iostream>
 #include <print>
 
+#include "lexeme_pool.hpp"
 #include "source_text.hpp"
 #include "tokens.hpp"
 
@@ -14,6 +14,7 @@ class ErrorFormatter {
     bool errors{ false };
 
     SourceText& source;
+    LexemePool& lexemes;
     const std::string sourceName;
 
     static const std::string RED;
@@ -21,7 +22,7 @@ class ErrorFormatter {
     static const std::string CLEAR;
 
 public:
-    explicit ErrorFormatter(SourceText&);
+    explicit ErrorFormatter(SourceText&, LexemePool&);
 
     template<typename... Arguments>
     static void error(std::format_string<Arguments...> message, Arguments&&... arguments) {
@@ -45,21 +46,32 @@ public:
 
         std::size_t lineNumberLength = std::to_string(token.position.line).length();
 
+        std::string lineOfCode = source.getLineFor(token.position);
+        std::string errorLexeme = lexemes.get(token.lexeme);
+
         // clang-format off
         std::println(
             std::cerr,
-            " {} | {}",
+            " {} | {}{}{}{}{}",
             token.position.line,
-            source.getLineFor(token.position)
+            lineOfCode.substr(0, token.position.column - 1),
+            RED,
+            errorLexeme,
+            CLEAR,
+            lineOfCode.substr(token.position.column + errorLexeme.length() - 1)
         );
 
         std::println(
             std::cerr,
-            " {:>{}} | {:>{}}\n",
+            " {:>{}} | {}{:>{}}{:~>{}}{}\n",
             "",
             lineNumberLength,
+            RED,
             "^",
-            token.position.column
+            token.position.column,
+            "",
+            errorLexeme.length() - 1,
+            CLEAR
         );
         // clang-format on
     }

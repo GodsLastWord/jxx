@@ -2,9 +2,10 @@
 
 namespace jxxc {
 
-ErrorFormatter::ErrorFormatter(SourceText& source)
+ErrorFormatter::ErrorFormatter(SourceText& source, LexemePool& lexemes)
     : source{ source }
-    , sourceName{ source.name() } {
+    , sourceName{ source.name() }
+    , lexemes{ lexemes } {
 }
 
 const std::string ErrorFormatter::RED{ "\033[1;31m" };

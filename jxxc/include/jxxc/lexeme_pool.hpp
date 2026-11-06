@@ -13,7 +13,7 @@ public:
     explicit LexemePool();
 
     std::size_t add(const std::string&);
-    std::string get(std::size_t) const;
+    auto get(std::size_t) const -> const std::string&;
 };
 
 } // namespace jxxc

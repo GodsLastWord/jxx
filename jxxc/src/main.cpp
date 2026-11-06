@@ -25,8 +25,8 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    jxxc::ErrorFormatter errfmt{ text };
     jxxc::LexemePool lexemes;
+    jxxc::ErrorFormatter errfmt{ text, lexemes };
     jxxc::visitor::ASTPrinter printer{ lexemes };
 
     auto tree = jxxc::Parser::parse(text, lexemes, errfmt);

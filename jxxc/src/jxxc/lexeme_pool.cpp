@@ -21,7 +21,7 @@ std::size_t LexemePool::add(const std::string& lexeme) {
     return lexemes.size() - 1;
 }
 
-std::string LexemePool::get(std::size_t index) const {
+auto LexemePool::get(std::size_t index) const -> const std::string& {
     if (index >= lexemes.size()) {
         throw std::invalid_argument(
             std::format(
