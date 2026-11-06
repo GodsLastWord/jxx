@@ -27,28 +27,25 @@ public:
     template<typename... Arguments>
     static void error(std::format_string<Arguments...> message, Arguments&&... arguments) {
         printExecutable();
-
-        print("error", message, arguments...);
+        report("error", message, arguments...);
     }
 
     template<typename... Arguments>
     static void fatal(std::format_string<Arguments...> message, Arguments&&... arguments) {
         printExecutable();
-        print("fatal error", message, arguments...);
+        report("fatal error", message, arguments...);
     }
 
     template<typename... Arguments>
     void error(const Token& token, std::format_string<Arguments...> message, Arguments&&... arguments) {
-        printSourceName();
-        std::print("[{}, {}]: ", token.position.line, token.position.column);
+        std::print("{}:[{}, {}]: ", sourceName, token.position.line, token.position.column);
 
-        print("error", message, std::forward<Arguments>(arguments)...);
+        report("error", message, std::forward<Arguments>(arguments)...);
 
         std::size_t lineNumberLength = std::to_string(token.position.line).length();
 
         std::string lineOfCode = source.getLineFor(token.position);
         std::string errorLexeme = lexemes.get(token.lexeme);
-
         // clang-format off
         std::println(
             std::cerr,
@@ -89,7 +86,7 @@ public:
 
 private:
     template<typename... Arguments>
-    inline static void print(const std::string& type, std::format_string<Arguments...> message, Arguments&&... arguments) {
+    inline static void report(const std::string& type, std::format_string<Arguments...> message, Arguments&&... arguments) {
 
         // clang-format off
         std::println(
@@ -104,10 +101,6 @@ private:
             )
         );
         // clang-format on
-    }
-
-    inline void printSourceName() {
-        std::print(std::cerr, "{}:", sourceName);
     }
 
     inline static void printExecutable() {
