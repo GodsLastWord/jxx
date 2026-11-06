@@ -26,7 +26,7 @@ Scanner::Scanner(SourceText& source, LexemePool& lexemes, ErrorFormatter& errfmt
 Token Scanner::next() {
     Token token;
 
-    switch (getState(source.peek())) {
+    switch (getState(peek())) {
         case State::ERROR:
             token = scanError();
             break;
@@ -51,7 +51,6 @@ Token Scanner::next() {
 
     if (isErrorToken(token)) {
         handleError(token);
-        token = {};
         return next();
     }
 
@@ -84,7 +83,7 @@ auto Scanner::getState(int c) -> State {
 }
 
 auto Scanner::currentState(State state) -> bool {
-    return getState(source.peek()) == state;
+    return getState(peek()) == state;
 }
 
 bool Scanner::isWhitespace(int c) {
@@ -116,20 +115,20 @@ bool Scanner::isErrorToken(const Token& token) {
 }
 
 Token Scanner::scanEof() {
-    return { Token::Kind::_EOF, lexemes.add(""), source.position() };
+    return { Token::Kind::_EOF, lexemes.add(""), currentPosition() };
 }
 
 void Scanner::skipWhitespace() {
-    while (isWhitespace(source.peek())) {
-        source.advance();
+    while (isWhitespace(peek())) {
+        advance();
     }
 }
 
 Token Scanner::scanNumber() {
-    Position startingPosition = source.position();
+    Position startingPosition = currentPosition();
     std::string lexeme;
 
-    for (int c = source.peek(); getState(c) == State::NUMBER; c = source.advance()) {
+    for (int c = peek(); getState(c) == State::NUMBER; c = advance()) {
         lexeme += char(c);
     }
 
@@ -137,10 +136,10 @@ Token Scanner::scanNumber() {
 }
 
 Token Scanner::scanBracket() {
-    Position startingPosition = source.position();
+    Position startingPosition = currentPosition();
     std::string lexeme;
 
-    for (int c = source.peek();; c = source.advance()) {
+    for (int c = peek();; c = advance()) {
         lexeme += char(c);
 
         if (!BRACKTES.contains(lexeme)) {
@@ -153,10 +152,10 @@ Token Scanner::scanBracket() {
 }
 
 Token Scanner::scanOperator() {
-    Position startingPosition = source.position();
+    Position startingPosition = currentPosition(); 
     std::string lexeme;
 
-    for (int c = source.peek();; c = source.advance()) {
+    for (int c = peek();; c = advance()) {
         lexeme += char(c);
 
         if (!OPERATORS.contains(lexeme)) {
@@ -169,10 +168,10 @@ Token Scanner::scanOperator() {
 }
 
 Token Scanner::scanError() {
-    Position startingPosition = source.position();
+    Position startingPosition = currentPosition();
     std::string lexeme;
 
-    for (int c = source.peek(); getState(c) == State::ERROR; c = source.advance()) {
+    for (int c = peek(); getState(c) == State::ERROR; c = advance()) {
         lexeme += char(c);
     }
 
@@ -193,6 +192,29 @@ void Scanner::handleError(const Token& error) {
         default:
             errfmt.error(error, "unknown error occurred");
     }
+}
+
+int Scanner::peek() {
+    return source.peek();
+}
+
+int Scanner::advance() {
+
+    int c = source.peek();
+    source.advance();
+
+    if (c == '\n') {
+        lineCounter++;
+        columnCounter = 0;
+        lineStartCounter = source.absoluteOffset();
+    }
+    columnCounter++;
+
+    return source.peek();
+}
+
+Position Scanner::currentPosition() {
+    return { lineCounter, columnCounter, lineStartCounter };
 }
 
 } // namespace jxxc

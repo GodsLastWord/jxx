@@ -28,6 +28,10 @@ class Scanner {
     LexemePool& lexemes;
     ErrorFormatter& errfmt;
 
+    std::size_t lineCounter{ 1 };
+    std::size_t columnCounter{ 1 };
+    std::streampos lineStartCounter{};
+
 public:
     explicit Scanner(SourceText&, LexemePool&, ErrorFormatter&);
 
@@ -52,6 +56,10 @@ private:
     Token scanError();
 
     void handleError(const Token&);
+
+    int peek();
+    int advance();
+    Position currentPosition();
 };
 
 } // namespace jxxc
