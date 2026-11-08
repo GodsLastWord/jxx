@@ -27,13 +27,19 @@ public:
     template<typename... Arguments>
     static void error(std::format_string<Arguments...> message, Arguments&&... arguments) {
         printExecutable();
-        report("error", message, arguments...);
+        report("error", message, std::forward<Arguments>(arguments)...);
     }
 
     template<typename... Arguments>
     static void fatal(std::format_string<Arguments...> message, Arguments&&... arguments) {
         printExecutable();
-        report("fatal error", message, arguments...);
+        report("fatal error", message, std::forward<Arguments>(arguments)...);
+    }
+
+    template<typename... Arguments>
+    void fatal(const Token& token, std::format_string<Arguments...> message, Arguments&&... arguments) {
+        std::print("{}:[{}, {}]: ", sourceName, token.position.line, token.position.column);
+        report("fatal error", message, std::forward<Arguments>(arguments)...);
     }
 
     template<typename... Arguments>
