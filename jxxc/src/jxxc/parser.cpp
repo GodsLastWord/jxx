@@ -13,16 +13,17 @@ std::map<Token::Kind, Parser::ParseRule> Parser::PARSE_RULES{
     { Token::Kind::L_ROUND,     { Precedence::NONE, &Parser::brackets, nullptr }          },
 };
 
-Parser::Parser(SourceText& source, LexemePool& lexemes, ErrorFormatter& errfmt)
+Parser::Parser(SourceText& source, LexemePool& lexemes, ConstantPool& constants, ErrorFormatter& errfmt)
     : errfmt{ errfmt }
+    , constants{ constants }
     , scan{ source, lexemes, errfmt } {
 
     advance();
     advance();
 }
 
-auto Parser::parse(SourceText& source, LexemePool& lexemes, ErrorFormatter& errfmt) -> std::unique_ptr<ast::Expression> {
-    return Parser{ source, lexemes, errfmt }.parse();
+auto Parser::parse(SourceText& source, LexemePool& lexemes, ConstantPool& constants, ErrorFormatter& errfmt) -> std::unique_ptr<ast::Expression> {
+    return Parser{ source, lexemes, constants, errfmt }.parse();
 }
 
 auto Parser::parse() -> std::unique_ptr<ast::Expression> {
@@ -59,6 +60,13 @@ auto Parser::parseExpression(int precedence) -> ast::Expression* {
 }
 
 auto Parser::literal() -> ast::Expression* {
+    switch (currentToken.kind) {
+        case Token::Kind::INT_LITERAL:
+            constants.addInt(currentToken.lexeme);
+        default:
+            break;
+    }
+
     advance();
     return new ast::LiteralExpression{ previousToken };
 }

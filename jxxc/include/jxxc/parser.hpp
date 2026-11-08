@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iterator>
 #include <memory>
 #include <map>
 
@@ -10,6 +9,7 @@
 #include "scanner.hpp"
 #include "source_text.hpp"
 #include "tokens.hpp"
+#include "constant_pool.hpp"
 
 namespace jxxc {
 
@@ -35,6 +35,7 @@ class Parser {
     static std::map<Token::Kind, ParseRule> PARSE_RULES;
 
     ErrorFormatter& errfmt;
+    ConstantPool& constants;
     Scanner scan;
 
     Token previousToken;
@@ -42,10 +43,10 @@ class Parser {
     Token nextToken;
 
 public:
-    explicit Parser(SourceText&, LexemePool&, ErrorFormatter&);
+    explicit Parser(SourceText&, LexemePool&, ConstantPool&, ErrorFormatter&);
 
     auto parse() -> std::unique_ptr<ast::Expression>;
-    static auto parse(SourceText&, LexemePool&, ErrorFormatter&) -> std::unique_ptr<ast::Expression>;
+    static auto parse(SourceText&, LexemePool&, ConstantPool&, ErrorFormatter&) -> std::unique_ptr<ast::Expression>;
 
 private:
     auto parseExpression(int = Precedence::NONE) -> ast::Expression*;
