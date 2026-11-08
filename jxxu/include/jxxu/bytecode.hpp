@@ -19,7 +19,7 @@ struct BytecodeInstruction {
     };
 };
 
-struct ConstantPool {
+struct ConstantType {
     enum : std::uint8_t {
         NO_CONSTANT,
 
