@@ -11,5 +11,3 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory("jxxu")
 add_subdirectory("jxxc")
-
-message(STATUS "Compiler: ${CMAKE_CXX_COMPILER}")
