@@ -11,3 +11,4 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory("jxxu")
 add_subdirectory("jxxc")
+add_subdirectory("jxxd")
